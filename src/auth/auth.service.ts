@@ -10,27 +10,27 @@ export class AuthService {
   constructor(private jwtService: JwtService, private PrismaService: PrismaService) { }
 
  async login(loginDto: loginDto) {
-    // const user = await this.PrismaService.user.findUnique({
-    //   where: { email: loginDto.email }
-    // })
+    const user = await this.PrismaService.user.findUnique({
+      where: { email: loginDto.email }
+    })
 
-    // if (!user) {
-    //   throw new Error('User not found')
-    // }
+    if (!user) {
+      throw new Error('User not found')
+    }
 
-    // const isPasswordValid = bcrypt.compareSync(
-    //   loginDto.password,
-    //   user.password
-    // )
+    const isPasswordValid = bcrypt.compareSync(
+      loginDto.password,
+      user.password
+    )
 
-    // if (!isPasswordValid) {
-    //   throw new Error('Invalid password')
+    if (!isPasswordValid) {
+      throw new Error('Invalid password')
 
-    // }
+    }
 
-    // const token = this.jwtService.sign({
-    //   name: user.name, email: user.email,
-    // })
+    const token = this.jwtService.sign({
+      name: user.name, email: user.email,
+    })
     return { access_token:  this.jwtService }
   }
 

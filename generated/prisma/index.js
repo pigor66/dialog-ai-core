@@ -124,7 +124,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\higor\\OneDrive\\Área de Trabalho\\Estudos\\dialog_ai-core\\dialoga-ai-core\\generated\\prisma",
+      "value": "C:\\Users\\higor\\OneDrive\\Área de Trabalho\\Estudos\\dialog-ai-core\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -138,7 +138,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\higor\\OneDrive\\Área de Trabalho\\Estudos\\dialog_ai-core\\dialoga-ai-core\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\higor\\OneDrive\\Área de Trabalho\\Estudos\\dialog-ai-core\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

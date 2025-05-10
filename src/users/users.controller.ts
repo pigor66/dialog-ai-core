@@ -3,6 +3,8 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { ApiCreatedResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { UserResponseDto } from './dto/user-response.dto';
 
 
 // @UseGuards(AuthGuard)
@@ -11,7 +13,11 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+ @ApiCreatedResponse({
+    description: 'Usuário criado com sucesso',
+    type: UserResponseDto,
+  })
+  create(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto | { data: { error: string; code_api_error: string } }> {
     return this.usersService.create(createUserDto);
   }
 

@@ -2,44 +2,61 @@ import { PrismaService } from './../prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import bcrypt from 'bcrypt'
-
 
 @Injectable()
 export class UsersService {
+  constructor(private PrismaService: PrismaService) {}
 
-  constructor(private PrismaService: PrismaService) { }
+  async create(createUserDto: CreateUserDto) {
+    const userExists = await this.PrismaService.user.findUnique({
+      where: { email: createUserDto.email },
+    });
 
-  create(createUserDto: CreateUserDto) {
+    if (userExists) {
+      return { data: { error: 'Este e-mail já está em uso', code_api_error: 'EXISTING-EMAIL' } };
+    }
+
     return this.PrismaService.user.create({
-      data: {
-        ...createUserDto,
-        password: bcrypt.hashSync(createUserDto.password, 10)
-      }
-    })
+      data: createUserDto,
+    });
   }
 
-  findAll() {
+  async findAll() {
     return this.PrismaService.user.findMany();
   }
 
-  findOne(id: string) {
-    return this.PrismaService.user.findUnique({
-      where: { id },
+  async findOne(id: string) {
+    const user = await this.PrismaService.user.findUnique({ where: { id } });
 
-    });;
+    if (!user) {
+      return { data: { error: 'Usuário não encontrado', code_api_error: 'USER-NOT-FOUND' } };
+    }
+
+    return user;
   }
 
-  update(id: string, UpdateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.PrismaService.user.findUnique({ where: { id } });
+
+    if (!user) {
+      return { data: { error: 'Usuário não encontrado', code_api_error: 'USER-NOT-FOUND' } };
+    }
+
     return this.PrismaService.user.update({
       where: { id },
-      data: UpdateUserDto
-    });;
+      data: updateUserDto,
+    });
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    const user = await this.PrismaService.user.findUnique({ where: { id } });
+
+    if (!user) {
+      return { data: { error: 'Usuário não encontrado', code_api_error: 'USER-NOT-FOUND' } };
+    }
+
     return this.PrismaService.user.delete({
-      where: { id }
-    })
+      where: { id },
+    });
   }
 }
