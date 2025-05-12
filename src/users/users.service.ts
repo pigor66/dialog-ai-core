@@ -13,11 +13,11 @@ export class UsersService {
     });
 
     if (userExists) {
-      return { data: { error: 'Este e-mail já está em uso', code_api_error: 'EXISTING-EMAIL' } };
+      return {   error: 'Este e-mail já está em uso', code_api_error: 'EXISTING-EMAIL' };
     }
 
     return this.PrismaService.user.create({
-      data: createUserDto,
+      data: createUserDto, 
     });
   }
 
