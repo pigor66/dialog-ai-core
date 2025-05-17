@@ -2,22 +2,25 @@ import { PrismaService } from './../prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(private PrismaService: PrismaService) {}
 
-  async create(createUserDto: CreateUserDto) {
+ async create(createUserDto: CreateUserDto) {
     const userExists = await this.PrismaService.user.findUnique({
       where: { email: createUserDto.email },
     });
 
     if (userExists) {
-      return {   error: 'Este e-mail já está em uso', code_api_error: 'EXISTING-EMAIL' };
+      return { error: 'Este e-mail já está em uso', code_api_error: 'EXISTING-EMAIL' };
     }
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10); 
+    createUserDto.password = hashedPassword;
 
     return this.PrismaService.user.create({
-      data: createUserDto, 
+      data: createUserDto,
     });
   }
 

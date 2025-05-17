@@ -1,6 +1,6 @@
 import { PrismaService } from './../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
-import { loginDto } from './login.dto';
+import { authDto } from './auth.dto';
 import { Injectable } from '@nestjs/common';
 import bcrypt from 'bcrypt'
 
@@ -9,29 +9,31 @@ import bcrypt from 'bcrypt'
 export class AuthService {
   constructor(private jwtService: JwtService, private PrismaService: PrismaService) { }
 
- async login(loginDto: loginDto) {
+  async login(authDto: authDto) {
     const user = await this.PrismaService.user.findUnique({
-      where: { email: loginDto.email }
+      where: { email: authDto.email }
     })
 
     if (!user) {
-      throw new Error('User not found')
+      return { error: 'E-mail não cadastrado', code_api_error: 'EMAIL-NOT-FOUND' };
     }
 
     const isPasswordValid = bcrypt.compareSync(
-      loginDto.password,
+      authDto.password,
       user.password
     )
 
     if (!isPasswordValid) {
-      throw new Error('Invalid password')
-
+      return { error: 'Senha invalida', code_api_error: 'PASSWORD-NOT-FOUND' };
     }
 
     const token = this.jwtService.sign({
-      name: user.name, email: user.email,
-    })
-    return { access_token:  this.jwtService }
+      sub: user.id,
+      name: user.name,
+      email: user.email,
+    });
+
+    return { access_token: token };
   }
 
 }
